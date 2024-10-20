@@ -76,12 +76,14 @@ impl<T> LinkedList<T> {
         self.end = self.start;
         let mut prev: Option<NonNull<Node<T>>> = None;
         let mut next: Option<NonNull<Node<T>>>;
-
         while let Some(current) = self.start {
             next = unsafe { (*(current.as_ptr())).next };
             unsafe { (*current.as_ptr()).next = prev };
             unsafe { (*current.as_ptr()).prev = next };
             prev = Some(current);
+            if next.is_none() {
+                break;
+            }
             self.start = next;
         }
     }
